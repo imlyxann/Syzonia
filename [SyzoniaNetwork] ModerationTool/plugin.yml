@@ -1,0 +1,18 @@
+main: fr.syzonia.moderationtool.Main
+author: Lyxann
+version: 1.0
+name: ModerationTool
+depends: [Database]
+commands:
+    ban:
+      description: Commande permettant de ban un joueur.
+    unban:
+      description: Commande permettant de ban un joueur.
+    freeze:
+      description: Commande permettant de Freeze un joueur.
+    unfreeze:
+      description: Commande permettant de UnFreeze un joueur.
+    report:
+      description: Commande permettant de Report un joueur.
+    vanish:
+      description: Commande permettant d'utiliser le Vanish.      

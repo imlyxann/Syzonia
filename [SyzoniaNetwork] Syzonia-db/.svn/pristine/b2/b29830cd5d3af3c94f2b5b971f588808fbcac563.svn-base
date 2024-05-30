@@ -1,0 +1,31 @@
+package fr.syzonia.syzodb.server;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.syzonia.syzodb.central.Servers;
+import fr.syzonia.syzodb.mysql.MySql;
+
+public class ServersManager {
+
+	public static List<Servers> getList() {
+		List<Servers> servers = new ArrayList<Servers>();
+		try {
+			
+			Statement sql = MySql.connection.createStatement();
+			ResultSet rs = sql.executeQuery("SELECT * FROM servers WHERE 1");
+			
+			while (rs.next()) {
+				servers.add(new Servers(rs.getString("server_name")));
+			}
+			
+			sql.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return servers;
+	}
+}

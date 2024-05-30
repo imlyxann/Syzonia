@@ -1,0 +1,11 @@
+package fr.syzonia.syzodb.utils;
+
+public enum ServerType {
+
+	HUB(1),
+	CAKEWARS(2);
+	
+	private ServerType(int id) {}
+	
+	
+}

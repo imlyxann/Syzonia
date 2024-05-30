@@ -1,0 +1,46 @@
+package fr.syzonia.moderationtool.playerconnection;
+
+import java.sql.PreparedStatement;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
+
+import fr.syzonia.syzodb.mysql.DatabaseManager;
+
+
+
+public class PlayerConnection {
+
+	public void setSpigotConnected(UUID uuid, Boolean i) {
+		try {
+				PreparedStatement preparedStatement = DatabaseManager.getConnexion().prepareStatement("UPDATE connection SET isSpigotConnected = ? WHERE uuid_player = ?");
+				preparedStatement.setBoolean(1, i);
+				preparedStatement.setString(2, uuid.toString());
+				preparedStatement.executeUpdate();
+				preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean getSpigotConnected(UUID uuid) {
+			try {
+				PreparedStatement preparedStatement = DatabaseManager.getConnexion().prepareStatement("SELECT isSpigotConnected FROM connection WHERE uuid_player = ?");
+				preparedStatement.setString(1, uuid.toString());
+				ResultSet rs = preparedStatement.executeQuery();
+				boolean yes = false;
+						while (rs.next()) {
+							yes = rs.getBoolean("isSpigotConnected");
+						}
+						preparedStatement.close();
+				return yes;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
+	
+	
+	
+}

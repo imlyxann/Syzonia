@@ -1,0 +1,59 @@
+package fr.syzonia.hub.pets.pets;
+
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+
+import fr.syzonia.hub.item.ItemBuilder;
+import fr.syzonia.hub.pets.PetsManager;
+
+
+public class MiniPlayerPet {
+	
+	public void spawn(Player player) {
+		ArmorStand armor = null;
+				
+		armor = (ArmorStand) player.getWorld().spawnEntity(new PetsManager().getLoc(player), EntityType.ARMOR_STAND);
+
+		armor.setCustomName("§6§lMini-" + player.getName());
+		armor.setCustomNameVisible(true);
+		armor.setSmall(true);
+		armor.setHelmet(getHead(player.getName()));
+		armor.setChestplate(new ItemBuilder().type(Material.DIAMOND_CHESTPLATE).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 4).build());
+		armor.setLeggings(new ItemBuilder().type(Material.DIAMOND_LEGGINGS).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 4).build());
+		armor.setBoots(new ItemBuilder().type(Material.DIAMOND_BOOTS).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 4).build());
+		armor.setGravity(false);
+		armor.setVisible(false);
+		
+		PetsManager.PlayerPets.put(player, armor);
+		
+	}
+	
+	public void killPet(Player player) {
+		PetsManager.PlayerPets.get(player).remove();
+		
+		PetsManager.PlayerPets.remove(player);
+	}
+	
+
+	
+	public ItemStack getHead(String name) {
+		
+		ItemStack item = new ItemStack(Material.SKULL_ITEM, 1 , (byte) 3);
+		SkullMeta meta = (SkullMeta) item.getItemMeta();
+		meta.setOwner(name);
+		item.setItemMeta(meta);
+		
+		
+		return item;
+	}
+	
+
+		
+
+	
+}

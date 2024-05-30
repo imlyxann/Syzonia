@@ -1,0 +1,24 @@
+main: fr.syzonia.hub.Hub
+author: Lyxann
+version: 1.0
+name: Hub
+depends: [Database, Core]
+commands:
+    rank:
+      description: Permet de changer le grade d'une personne
+    coins:
+      description: Permet de changer les syzocoins d'une personne
+    sendreload:
+      description: Reload du serv
+    account:
+      description: test
+    spawn:
+      description: Permet de retourner au spawn
+    help:
+    shutup:
+      description: Boucle Le chat
+    about:
+      description: About d'un joueur
+    event:
+      description: Custom Event By an admin
+

@@ -1,0 +1,87 @@
+package fr.syzonia.syzobungee.listeners;
+
+
+import fr.syzonia.bungeedb.Main;
+
+import fr.syzonia.bungeedb.mysql.BanManager;
+import fr.syzonia.bungeedb.mysql.DatabaseManager;
+import fr.syzonia.bungeedb.mysql.FriendBDD;
+import fr.syzonia.syzobungee.PlayerConnections;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
+
+public class ProxiedPlayerJoinListener implements Listener {
+	
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void PlayerJoin(PostLoginEvent event) {
+		ProxiedPlayer p = event.getPlayer();
+		
+		p.setTabHeader(new TextComponent("§d\\o/ §6Bienvenue sur Syzonia §d\\o/ \n "), new TextComponent("\n §fForum, Boutique, Support, News sont sur §ahttps://syzonia.fr"));
+		
+		if(Main.INSTANCE.banManager.isBanned(p.getUniqueId())) {
+			Main.INSTANCE.banManager.checkDuration(p.getUniqueId());
+			
+			   p.disconnect(
+					    "§r----- §6§lSyzonia §r- §cSanction §r-----\n " +
+			 			 "§7» §e§lVous avez été banni de Syzonia..." +
+			 			"\n" +
+		                "\n§7Motif: §4" + new BanManager().getReason(p.getUniqueId()) +
+		                "\n§cCette penalité prend dans " + new BanManager().getTimeLeft(p.getUniqueId()) +
+		                "\n " +
+		                "\n§bPour faire appel à cette sanction, rendez-vous sur le discord, merci." +
+		                "\nhttps://dsc.gg/syzonia" + 
+		                "\n§r---------------------------");
+			return;
+			}
+		
+		if(fr.syzonia.syzobungee.Main.Maintenance == 1) {
+			if(DatabaseManager.getPlayerRank(p.getUniqueId()) < 5) {
+				p.disconnect(new TextComponent(
+						 "§r----- §6§lSyzonia §r- §eMaintenance §r-----\n " +
+						 "§7» §e§lSyzonia est en Maintenance" +
+						 "\n " +
+						 "\n Merci de patienter..." +
+						 "\n " +
+						 "\n§bSi il y a un problème merci de nous contacter sur le discord." +
+						 "\nhttps://dsc.gg/syzonia" + 
+						 "\n§r---------------------------"));
+				return;
+			}
+			
+		}
+		
+		new PlayerConnections().createAc(p.getUniqueId());
+		new PlayerConnections().createConnectionAccount(p.getUniqueId());
+		new PlayerConnections().setBungeeConnected(p.getUniqueId(), true);
+		
+		
+		Main.INSTANCE.database.createFriendsAllowOnJoin(p.getUniqueId());
+		
+		if(DatabaseManager.getPlayerRank(p.getUniqueId()) == 7) {
+			p.setPermission("bungeecord.command.server", true);
+		} else {
+			p.setPermission("bungeecord.command.server", false);
+		}
+		
+		if(DatabaseManager.getPlayerRank(p.getUniqueId()) == 7) {
+			p.setPermission("bungeecord.command.bungee", true);
+		} else {
+			p.setPermission("bungeecord.command.bungee", false);
+		}
+		
+		if(DatabaseManager.getUUID(p.getName()) != null) {
+			for(ProxiedPlayer PlayerOnline : ProxyServer.getInstance().getPlayers()) {
+				if(new FriendBDD().isFriendWith(p.getName(), PlayerOnline.getName())) {
+					if(!PlayerOnline.getName().equalsIgnoreCase(p.getName())) {
+							PlayerOnline.sendMessage(new TextComponent("§r[§dAmis§r] §b" + p.getName() + " §avient de se connecter."));
+					}
+				}
+			}
+		}
+	}
+}

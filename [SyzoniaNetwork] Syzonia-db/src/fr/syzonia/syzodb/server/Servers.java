@@ -1,0 +1,242 @@
+package fr.syzonia.syzodb.server;
+
+import java.sql.PreparedStatement;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import fr.syzonia.syzodb.mysql.MySql;
+import fr.syzonia.syzodb.mysql.SQL.SQL;
+import fr.syzonia.syzodb.server.serilization.Serilization;
+import fr.syzonia.syzodb.utils.ServerType;
+import fr.syzonia.syzodb.utils.SyzoList;
+
+
+public class Servers {
+	
+	public String table = "servers";
+	private String displayName;
+	
+	public static List<String> Players = new ArrayList<>();
+	
+	public Servers(String displayName) {
+		this.displayName = displayName;
+	}
+	
+	public static List<String> getList() {
+		List<String> servers = new ArrayList<String>();
+		try {
+			
+			Statement sql = MySql.connection.createStatement();
+			ResultSet rs = sql.executeQuery("SELECT * FROM servers WHERE 1");
+			
+			while (rs.next()) {
+				servers.add(rs.getString("server_name"));
+			}
+			
+			sql.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return servers;
+	}
+	
+	public void loadServer(String address, int port, String string) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT status FROM " + table + " WHERE server_name = ?");
+			stat.setString(1, displayName);
+			ResultSet rs = stat.executeQuery();
+			
+			if(!rs.next()) {
+					stat.close();
+					stat = MySql.getConnexion().prepareStatement("INSERT INTO " + table + " (status, port, ip, server_name, type, players) VALUES (?, ?, ?, ?, ?, ?)");
+					stat.setInt(1, 1);
+					stat.setInt(2, port);
+					stat.setString(3, address);
+					stat.setString(4, displayName);
+					stat.setString(5, string);
+					stat.setString(6, Players.toString());
+					stat.execute();
+					stat.close();		
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void setStatus(int status) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("UPDATE " + table + " SET status = ? WHERE server_name = ?");
+			stat.setInt(1, status);
+			stat.setString(2, displayName);
+			stat.executeUpdate();
+			stat.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void setServerType(ServerType type) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("UPDATE servers SET type = ? WHERE server_name = ?");
+			stat.setString(1, type.toString());
+			stat.setString(2, displayName);
+			stat.executeUpdate();
+			stat.close();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public String getType() {
+		
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT type FROM servers WHERE server_name = ?");
+			stat.setString(1, displayName);
+			ResultSet rs = stat.executeQuery();
+			String type = "";
+			
+			while(rs.next()) {
+				type = rs.getString("type");
+			}
+			stat.close();
+			
+			
+			return type;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+	}
+	
+	
+	public int getStatus() {
+		
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT status FROM servers WHERE server_name = ?");
+			stat.setString(1, displayName);
+			ResultSet rs = stat.executeQuery();
+			int status = 0;
+			
+			while(rs.next()) {
+				status = rs.getInt("status");
+			}
+			stat.close();
+			
+			
+			return status;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+		
+	}
+	
+
+	public static String getName(int servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT server_name FROM servers WHERE id = ?");
+			stat.setInt(0, servername);
+			ResultSet rs = stat.executeQuery();
+			String server_name = "";
+			
+			while(rs.next()) {
+				server_name = rs.getString("server_name");
+			}
+			stat.close();
+			
+			
+			return server_name;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+	}
+	
+	
+	public static String getIp(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT ip FROM servers WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			String ip = "";
+			
+			while(rs.next()) {
+				ip = rs.getString("ip");
+			}
+			stat.close();
+			
+			
+			return ip;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+	}
+	
+	
+	public static int getPort(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT port FROM servers WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			int port = 0;
+			
+			while(rs.next()) {
+				port = rs.getInt("port");
+			}
+			
+			stat.close();
+			return port;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+		
+	}
+	
+	
+	// Players
+	
+	public static void addPlayer(String server_name, String player) {
+	    List<String> list = Serilization.toList((String) SQL.query("SELECT players FROM servers WHERE server_name = '" + server_name + "'", "players"));
+	    SQL.Statement("UPDATE servers SET players = '" + Serilization.toDb(SyzoList.getList(list, player))  + "' WHERE server_name = '" + server_name + "'");
+	}
+	
+	public static void removePlayer(String server_name, String player) {
+	    List<String> list = Serilization.toList((String) SQL.query("SELECT players FROM servers WHERE server_name = '" + server_name + "'", "players"));
+	    SQL.Statement("UPDATE servers SET players = '" + Serilization.toDb(list.stream().filter(k -> !k.equals(player) && !k.equals(player + "-")).collect(Collectors.toList())) + "' WHERE server_name = '" + server_name + "'");
+	}
+	
+	public static List<String> getPlayers(String server_name) {
+		List<String> list = Serilization.toList((String) SQL.query("SELECT players FROM servers WHERE server_name = '" + server_name + "'", "players"));
+		return list;
+	}
+	
+}

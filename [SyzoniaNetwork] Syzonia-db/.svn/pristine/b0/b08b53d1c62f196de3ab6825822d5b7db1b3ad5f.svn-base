@@ -1,0 +1,232 @@
+package fr.syzonia.syzodb.server;
+
+import java.sql.PreparedStatement;
+
+
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.syzonia.syzodb.mysql.MySql;
+import fr.syzonia.syzodb.mysql.SQL.SQL;
+import fr.syzonia.syzodb.utils.ServerType;
+
+
+public class ServersCommon {
+	
+	public String table = "servers";
+	private String displayName;
+	
+	public static List<String> Players = new ArrayList<>();
+	
+	public ServersCommon(String displayName) {
+		this.displayName = displayName;
+	}
+	
+	public void loadServer(String address, int port, String string) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT status FROM " + table + " WHERE server_name = ?");
+			stat.setString(1, displayName);
+			ResultSet rs = stat.executeQuery();
+			
+			if(!rs.next()) {
+					stat.close();
+					stat = MySql.getConnexion().prepareStatement("INSERT INTO " + table + " (status, port, ip, server_name, type, players) VALUES (?, ?, ?, ?, ?, ?)");
+					stat.setInt(1, 1);
+					stat.setInt(2, port);
+					stat.setString(3, address);
+					stat.setString(4, displayName);
+					stat.setString(5, string);
+					stat.setString(6, Players.toString());
+					stat.execute();
+					stat.close();		
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void setStatus(int status) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("UPDATE " + table + " SET status = ? WHERE server_name = ?");
+			stat.setInt(1, status);
+			stat.setString(2, displayName);
+			stat.executeUpdate();
+			stat.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void setServerType(ServerType type) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("UPDATE servers SET type = ? WHERE server_name = ?");
+			stat.setString(1, type.toString());
+			stat.setString(2, displayName);
+			stat.executeUpdate();
+			stat.close();
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public String getType() {
+		
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT type FROM servers WHERE server_name = ?");
+			stat.setString(1, displayName);
+			ResultSet rs = stat.executeQuery();
+			String type = "";
+			
+			while(rs.next()) {
+				type = rs.getString("type");
+			}
+			stat.close();
+			
+			
+			return type;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+	}
+	
+	
+	public int getStatus() {
+		
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT status FROM servers WHERE server_name = ?");
+			stat.setString(1, displayName);
+			ResultSet rs = stat.executeQuery();
+			int status = 0;
+			
+			while(rs.next()) {
+				status = rs.getInt("status");
+			}
+			stat.close();
+			
+			
+			return status;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+		
+	}
+	
+
+	public static String getName(int servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT server_name FROM servers WHERE id = ?");
+			stat.setInt(0, servername);
+			ResultSet rs = stat.executeQuery();
+			String server_name = "";
+			
+			while(rs.next()) {
+				server_name = rs.getString("server_name");
+			}
+			stat.close();
+			
+			
+			return server_name;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+	}
+	
+	
+	public static String getIp(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT ip FROM servers WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			String ip = "";
+			
+			while(rs.next()) {
+				ip = rs.getString("ip");
+			}
+			stat.close();
+			
+			
+			return ip;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+	}
+	
+	
+	public static int getPort(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT port FROM servers WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			int port = 0;
+			
+			while(rs.next()) {
+				port = rs.getInt("port");
+			}
+			
+			stat.close();
+			return port;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+		
+	}
+	
+	
+	// Players
+	public static void addPlayers(String playername, String servername) {
+		Object cache = SQL.SQL_Receive("SELECT server_name FROM servers WHERE server_name = '" + servername.toString() + "'", "server_name");
+		if(cache != null) {
+			Players.add(playername);
+			SQL.SQL_Update("UPDATE servers SET players = '" + Players.toString() + "' WHERE server_name = '" + servername.toString() + "'");
+		}
+	}
+	
+	public static void removePlayers(String playername, String servername) {
+		Object cache = SQL.SQL_Receive("SELECT server_name FROM servers WHERE server_name = '" + servername.toString() + "'", "server_name");
+		if(cache != null) {
+			Players.remove(playername);
+			SQL.SQL_Update("UPDATE servers SET players = '" + Players.toString() + "' WHERE server_name = '" + servername.toString() + "'");
+		}
+	}
+	
+	public static boolean PlayersIsInServer(String playername, String servername) {
+		String r  =(String) SQL.SQL_Receive("SELECT players FROM servers WHERE server_name = '" + servername + "'" , "players");
+		if(r != null) {
+			if(r.contains(playername + ";")) {
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+}

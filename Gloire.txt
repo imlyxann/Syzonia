@@ -1,0 +1,22 @@
+Gloire:
+
+	Gloire Colorée 0 - 1 000 000
+ 
+	Gloire Féerique 1 000 000 - 10 000 000
+
+	Gloire Montagneuse 10 000 000 - 50 000 000
+
+	Gloire Skieuse 50 000 000 - 100 000 000
+
+	Gloire Festive 100 000 000 - 500 000 000
+
+	Gloire Atomique 500 000 000 - 1 000 000 000
+
+Bdd
+
+	Table players
+		
+	BigInt		Text	      BigInt	    Integer  
+	------		------	      ------	    ------
+	gloire_value | Gloire_name | gloire_to_go | Gloire msg
+

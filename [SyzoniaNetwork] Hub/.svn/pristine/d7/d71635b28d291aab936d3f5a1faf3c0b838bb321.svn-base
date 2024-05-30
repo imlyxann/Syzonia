@@ -1,0 +1,124 @@
+package fr.syzonia.hub.item.MainMenu;
+
+import java.util.ArrayList;
+
+
+
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+
+import fr.syzonia.syzodb.Main;
+import fr.syzonia.syzodb.mysql.PlayerInfo;
+import fr.syzonia.syzodb.mysql.RewardsManager;
+import fr.syzonia.syzodb.rank.Syzorank;
+import fr.syzonia.hub.VirtualMenu.VirtualMenu;
+import fr.syzonia.hub.item.ItemBuilder;
+
+public class LoadMainMenuItem {
+
+	public void LoadItem(VirtualMenu inv, Player player) {
+		ItemStack BED = new ItemStack(Material.BED);
+		ItemMeta BEDMETA = BED.getItemMeta();
+		BEDMETA.setDisplayName(ChatColor.GOLD + "Spawn");
+		List<String> BEDLORE = new ArrayList<>();
+		BEDLORE.add("§cPermet d'aller au spawn");
+		BEDMETA.setLore(BEDLORE);
+		BED.setItemMeta(BEDMETA);
+		
+		ItemStack GOLD = new ItemStack(Material.GOLD_BOOTS);
+		ItemMeta GOLDMETA = GOLD.getItemMeta();
+		GOLDMETA.setDisplayName(ChatColor.GOLD + "Jump");
+		List<String> GOLDLORE = new ArrayList<>();
+		GOLDLORE.add("§cPermet d'aller au Jump");
+		GOLDMETA.setLore(GOLDLORE);
+		GOLD.setItemMeta(GOLDMETA);
+		
+		ItemStack MINIGAMES = new ItemStack(Material.TNT);
+		ItemMeta MINIGAMESMETA = MINIGAMES.getItemMeta();
+		MINIGAMESMETA.setDisplayName("§aMini-Jeux");
+		MINIGAMES.setItemMeta(MINIGAMESMETA);
+		
+		// Profil
+        ItemStack playerhead = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        
+        SkullMeta playerheadmeta = (SkullMeta) playerhead.getItemMeta();
+        playerheadmeta.setOwner(player.getName());
+        playerheadmeta.setDisplayName("§6" + player.getName());
+        List<String> PlayerHeadLore = new ArrayList<>();
+        PlayerHeadLore.add("§8--------------------");
+        PlayerHeadLore.add("§7Pseudonyme: §e" + new Syzorank(new PlayerInfo(player.getUniqueId()).getRank()).getDisplayName(player.getUniqueId()) + " " + player.getName());
+        PlayerHeadLore.add("§7SyzoCoins: §6" + new PlayerInfo(player.getUniqueId()).getCoinsNumber());
+        PlayerHeadLore.add("§8--------------------");
+        if(new RewardsManager().getRewardsFound(player.getUniqueId())) {
+        	 PlayerHeadLore.add("§7Récompenses: §aOui");
+        } else {
+        	 PlayerHeadLore.add("§7Récompenses: §cNon");
+        }
+       
+        if(Main.getInstance().database.getSeePlayer(player.getUniqueId()) == 1) {
+            PlayerHeadLore.add("§7Fine z'herbe: §aOui");	
+        } else {
+        	PlayerHeadLore.add("§7Fine z'herbe: §cNon");	
+        }
+
+        playerheadmeta.setLore(PlayerHeadLore);
+        playerhead.setItemMeta(playerheadmeta);
+        
+        ItemStack Quit = new ItemStack(Material.ARROW);
+		ItemMeta QuitMeta = Quit.getItemMeta();
+		QuitMeta.setDisplayName(ChatColor.RED + "Quitter");
+		Quit.setItemMeta(QuitMeta);
+		
+		ItemStack GLASS_PANE = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 9);
+		ItemMeta GLASS_PANEMETA = GLASS_PANE.getItemMeta();
+		GLASS_PANEMETA.setDisplayName("");
+		GLASS_PANE.setItemMeta(GLASS_PANEMETA);
+		
+		ItemStack BOUTIQUE = new ItemStack(Material.NETHER_STAR);
+		ItemMeta BOUTIQUEMETA = BOUTIQUE.getItemMeta();
+		BOUTIQUEMETA.setDisplayName(ChatColor.GOLD + "§dShop");
+		List<String> BOUTIQUELORE = new ArrayList<>();
+		BOUTIQUELORE.add("§cPermet d'accéder à la boutique");
+		BOUTIQUEMETA.setLore(BOUTIQUELORE);
+		BOUTIQUE.setItemMeta(BOUTIQUEMETA);
+		
+		ItemStack friendsmenu = new ItemBuilder().type(Material.EMERALD).name("§6Vos Friends").lore("§cLa liste de vos amis!").build();
+		ItemStack TpMenu = new ItemBuilder().type(Material.COOKIE).name("§6Téléportation").lore("§cLes Hubs disponibles!").build();
+		ItemStack preferances = new ItemBuilder().type(Material.PAPER).name("§6Vos Préférences").lore("§cModifier vos préférences").build();
+		ItemStack vip = new ItemBuilder().type(Material.DIAMOND_AXE).name("§6Vip").lore("§cMenu pour les Vip!").build();
+		
+		// Glass
+		inv.setItem(0, GLASS_PANE);
+		inv.setItem(1, GLASS_PANE);
+		inv.setItem(7, GLASS_PANE);
+		inv.setItem(8, GLASS_PANE);
+		inv.setItem(9, GLASS_PANE);
+		inv.setItem(17, GLASS_PANE);
+		inv.setItem(36, GLASS_PANE);
+		inv.setItem(44, GLASS_PANE);
+		inv.setItem(45, GLASS_PANE);
+		inv.setItem(46, GLASS_PANE);
+		inv.setItem(47, GLASS_PANE);
+		inv.setItem(51, GLASS_PANE);
+		inv.setItem(52, GLASS_PANE);
+		inv.setItem(53, GLASS_PANE);
+		
+		inv.setItem(4, vip);
+		inv.setItem(25, BOUTIQUE);
+		inv.setItem(22, MINIGAMES);
+		inv.setItem(49, Quit);
+		inv.setItem(19, BED);
+		inv.setItem(28, GOLD);
+		inv.setItem(31, playerhead);
+		inv.setItem(34, TpMenu);
+		inv.setItem(48, friendsmenu);
+		inv.setItem(50, preferances);
+	}
+	
+}

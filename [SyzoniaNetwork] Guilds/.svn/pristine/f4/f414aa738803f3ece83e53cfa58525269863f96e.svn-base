@@ -1,0 +1,8 @@
+main: fr.syzonia.guilds.Main
+name: Guilds
+author: Lyxann
+version: 1.0
+depend: [BungeeDatabase]
+
+
+

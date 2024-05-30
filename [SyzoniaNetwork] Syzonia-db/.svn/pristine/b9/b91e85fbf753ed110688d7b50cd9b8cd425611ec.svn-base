@@ -1,0 +1,39 @@
+package fr.syzonia.syzodb.game;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import fr.syzonia.syzodb.mysql.DatabaseManager;
+
+
+
+public enum ServerGameStatus {
+
+	HORSLIGNE, LIGNE, START, RELOAD, MAINTENANCE, ERREUR;
+	
+
+	public String getCakeWarsServerGameStatus(String servername) {
+		try {
+			
+			PreparedStatement stat = DatabaseManager.getConnexion().prepareStatement("SELECT status FROM cakewars_server WHERE server_name = ?");
+			stat.setString(0, servername);
+			ResultSet rs = stat.executeQuery();
+			
+			String result = "";
+			
+			while (rs.next()) {
+				result = rs.getString("status");
+			}
+			
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	
+	
+}

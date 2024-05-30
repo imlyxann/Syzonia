@@ -1,0 +1,174 @@
+package fr.syzonia.hub.VirtualMenu.Legend;
+
+import java.util.UUID;
+
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+
+import fr.syzonia.syzodb.mysql.DatabaseManager;
+import fr.syzonia.syzodb.mysql.PlayerInfo;
+import fr.syzonia.syzodb.utils.Symbol;
+import fr.syzonia.hub.VirtualMenu.VirtualMenu;
+import fr.syzonia.hub.item.ItemBuilder;
+
+public class VirtualLegendSymbol extends VirtualMenu implements Listener{
+
+	public VirtualLegendSymbol() {
+		super("§3Legend", 9 * 2);
+	}
+	
+	public void open(Player player) {
+		Symbol symbol = new Symbol();
+		this.setItem(1, new ItemBuilder().type(Material.PAPER).name("☯").lore((symbol.getBddSymbol(player.getUniqueId()) == 1 ? "§cVous utilisez actuellement ce Symbol!" : "§aUtilisez ce Symbole!")).build());
+		this.setItem(3, new ItemBuilder().type(Material.BEACON).name("☢").lore((symbol.getBddSymbol(player.getUniqueId()) == 2 ? "§cVous utilisez actuellement ce Symbol!" : "§aUtilisez ce Symbole!")).build());
+		this.setItem(5, new ItemBuilder().type(Material.SNOW_BALL).name("☃").lore((symbol.getBddSymbol(player.getUniqueId()) == 3 ? "§cVous utilisez actuellement ce Symbol!" : "§aUtilisez ce Symbole!")).build());
+		this.setItem(7, new ItemBuilder().type(Material.BOW).name("♛").lore((symbol.getBddSymbol(player.getUniqueId()) == 4 ? "§cVous utilisez actuellement ce Symbol!" : "§aUtilisez ce Symbole!")).build());
+		this.setItem(10, new ItemBuilder().type(Material.YELLOW_FLOWER).name("✿").lore((symbol.getBddSymbol(player.getUniqueId()) == 5 ? "§cVous utilisez actuellement ce Symbol!" : "§aUtilisez ce Symbole!")).build());
+		this.setItem(12, new ItemBuilder().type(Material.NOTE_BLOCK).name("♫").lore((symbol.getBddSymbol(player.getUniqueId()) == 6 ? "§cVous utilisez actuellement ce Symbol!" : "§aUtilisez ce Symbole!")).build());
+		this.setItem(14, new ItemBuilder().type(Material.FIREBALL).name("☄").lore((symbol.getBddSymbol(player.getUniqueId()) == 7 ? "§cVous utilisez actuellement ce Symbol!" : "§aUtilisez ce Symbole!")).build());
+		this.setItem(16, new ItemBuilder().type(Material.NETHER_STAR).name("★").lore((symbol.getBddSymbol(player.getUniqueId()) == 8 ? "§cVous utilisez actuellement ce Symbol!" : "§aUtilisez ce Symbole!")).build());
+		OpenInventory(player);
+	}
+
+	@EventHandler
+	public void PlayerInv(InventoryClickEvent event) {
+		if(event.getCurrentItem() == null && event.getAction() != null) return;
+		
+		if(event.getInventory().getName().equalsIgnoreCase("§3Legend")) {
+			
+			Player player = (Player) event.getWhoClicked();
+			Symbol symbol = new Symbol();
+			PlayerInfo playerinfo = PlayerInfo.getInfos(player.getUniqueId());
+			UUID uuid = DatabaseManager.getUUID(player.getName());
+			
+			if(playerinfo.getRank() == 3) {
+				
+					switch (event.getCurrentItem().getType()) {
+					case PAPER: 
+						
+						if(symbol.getBddSymbol(uuid) != 1) {
+							symbol.setSymbol(uuid, 1);
+							player.sendMessage("§aVous avez mis le Symbol: " + symbol.getSymbol(uuid));
+							player.sendMessage("§dDéconnectez vous, puis reconnectez vous pour que les changements s'appliquent!");
+							player.closeInventory();
+						} else {
+							player.playSound(player.getEyeLocation(), Sound.VILLAGER_NO, 3, 3);
+						}
+						
+						
+						break;
+						
+					case BEACON: 
+						
+						if(symbol.getBddSymbol(uuid) != 2) {
+							symbol.setSymbol(uuid, 2);
+							player.sendMessage("§aVous avez mis le Symbol: " + symbol.getSymbol(uuid));
+							player.sendMessage("§dDéconnectez vous, puis reconnectez vous pour que les changements s'appliquent!");
+							player.closeInventory();
+						} else {
+							player.playSound(player.getEyeLocation(), Sound.VILLAGER_NO, 3, 3);
+						}
+						
+						
+						break;
+						
+					case SNOW_BALL: 
+						
+						if(symbol.getBddSymbol(uuid) != 3) {
+							symbol.setSymbol(uuid, 3);
+							player.sendMessage("§aVous avez mis le Symbol: " + symbol.getSymbol(uuid));
+							player.sendMessage("§dDéconnectez vous, puis reconnectez vous pour que les changements s'appliquent!");
+							player.closeInventory();
+						} else {
+							player.playSound(player.getEyeLocation(), Sound.VILLAGER_NO, 3, 3);
+						}
+						
+						
+						break;
+						
+					case BOW: 
+						
+						if(symbol.getBddSymbol(uuid) != 4) {
+							symbol.setSymbol(uuid, 4);
+							player.sendMessage("§aVous avez mis le Symbol: " + symbol.getSymbol(uuid));
+							player.sendMessage("§dDéconnectez vous, puis reconnectez vous pour que les changements s'appliquent!");
+							player.closeInventory();
+						} else {
+							player.playSound(player.getEyeLocation(), Sound.VILLAGER_NO, 3, 3);
+						}
+						
+						
+						break;
+						
+					case YELLOW_FLOWER: 
+						
+						if(symbol.getBddSymbol(uuid) != 5) {
+							symbol.setSymbol(uuid, 5);
+							player.sendMessage("§aVous avez mis le Symbol: " + symbol.getSymbol(uuid));
+							player.sendMessage("§dDéconnectez vous, puis reconnectez vous pour que les changements s'appliquent!");
+							player.closeInventory();
+						} else {
+							player.playSound(player.getEyeLocation(), Sound.VILLAGER_NO, 3, 3);
+						}
+						
+						
+						break;
+						
+					case NOTE_BLOCK: 
+						
+						if(symbol.getBddSymbol(uuid) != 6) {
+							symbol.setSymbol(uuid, 6);
+							player.sendMessage("§aVous avez mis le Symbol: " + symbol.getSymbol(uuid));
+							player.sendMessage("§dDéconnectez vous, puis reconnectez vous pour que les changements s'appliquent!");
+							player.closeInventory();
+						} else {
+							player.playSound(player.getEyeLocation(), Sound.VILLAGER_NO, 3, 3);
+						}
+						
+						
+						break;
+
+					case FIREBALL: 
+						
+						if(symbol.getBddSymbol(uuid) != 7) {
+							symbol.setSymbol(uuid, 7);
+							player.sendMessage("§aVous avez mis le Symbol: " + symbol.getSymbol(uuid));
+							player.sendMessage("§dDéconnectez vous, puis reconnectez vous pour que les changements s'appliquent!");
+							player.closeInventory();
+						} else {
+							player.playSound(player.getEyeLocation(), Sound.VILLAGER_NO, 3, 3);
+						}
+						
+						break;
+						
+					case NETHER_STAR: 
+						
+						if(symbol.getBddSymbol(uuid) != 8) {
+							symbol.setSymbol(uuid, 8);
+							player.sendMessage("§aVous avez mis le Symbol: " + symbol.getSymbol(uuid));
+							player.sendMessage("§dDéconnectez vous, puis reconnectez vous pour que les changements s'appliquent!");
+							player.closeInventory();
+						} else {
+							player.playSound(player.getEyeLocation(), Sound.VILLAGER_NO, 3, 3);
+						}
+						
+						
+						break;
+
+					default:
+						break;
+					}
+					
+			} 
+		}
+	}
+}
+	
+
+
+
+

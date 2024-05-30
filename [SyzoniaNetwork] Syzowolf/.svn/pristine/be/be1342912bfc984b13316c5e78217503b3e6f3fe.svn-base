@@ -1,0 +1,10 @@
+main: fr.syzonia.syzowolf.Main
+name: SyzoWolf
+author: Lyxann
+version: 1.0
+description: Syzonia's Anticheat!
+commands:
+    syzowolf:
+        description: syzowolf cmd
+
+

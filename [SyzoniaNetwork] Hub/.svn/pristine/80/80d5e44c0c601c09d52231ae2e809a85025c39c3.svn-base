@@ -1,0 +1,86 @@
+package fr.syzonia.hub.VirtualShop.Kit.CakeWars;
+
+import org.bukkit.entity.Player;
+
+
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+
+import fr.syzonia.core.price.PriceUtils;
+import fr.syzonia.syzodb.kits.cakewars.CakeWarsKitsManager;
+import fr.syzonia.syzodb.mysql.PlayerInfo;
+import fr.syzonia.hub.VirtualMenu.VirtualMenu;
+import fr.syzonia.hub.item.shop.kits.cakewars.LoadItemShopKitsCakeWars;
+
+public class KitCakeWarsShop extends VirtualMenu implements Listener{
+
+	public KitCakeWarsShop() {
+		super("§dShop > Kits > Jeux > CK", 9 * 1);
+	}
+	
+	public void open(Player player) {
+		new LoadItemShopKitsCakeWars().LoadItem(this, player);
+		OpenInventory(player);
+	}
+	
+	@EventHandler
+	public void PlayerInv(InventoryClickEvent event) {
+		if(event.getCurrentItem() == null && event.getAction() != null) return;
+		
+		if(inv.getName().equalsIgnoreCase("§dShop > Kits > Jeux > CK")) {
+			event.setCancelled(true);
+			
+			Player player = (Player) event.getWhoClicked();
+			KitCakeWarsShop ckshop = new KitCakeWarsShop();
+			
+			switch (event.getCurrentItem().getType()) {
+			case IRON_SWORD:
+				
+				if(CakeWarsKitsManager.Ranger.getPlayerKit(player.getUniqueId()) == 0) {
+					 
+					if(new PlayerInfo(player.getUniqueId()).getCoinsNumber() >= new PriceUtils().Price(110)) {						
+						CakeWarsKitsManager.Ranger.addKit(player.getUniqueId());
+						new PlayerInfo(player.getUniqueId()).removeCoins(new PriceUtils().Price(110));
+						player.sendMessage("§6Vous venez d'achetez le kit Ranger dans la section CakeWars!");
+						ckshop.open(player);
+					} else {
+						player.sendMessage("§cTu n'as pas assez de SynaCoins!");
+					}
+					
+				} else {
+					player.sendMessage("§cTu possède déjà cet objet");
+				}
+					
+				break;
+				
+				
+			case WOOL:
+				
+				if(CakeWarsKitsManager.Gladiator.getPlayerKit(player.getUniqueId()) == 0) {
+					 
+					if(new PlayerInfo(player.getUniqueId()).getCoinsNumber() >= new PriceUtils().Price(130)) {	
+						CakeWarsKitsManager.Gladiator.addKit(player.getUniqueId());
+						new PlayerInfo(player.getUniqueId()).removeCoins(new PriceUtils().Price(130));
+						player.sendMessage("§6Vous venez d'achetez le kit Gladiator dans la section CakeWars!");
+						ckshop.open(player);
+					} else {
+						player.sendMessage("§cTu n'as pas assez de SynaCoins!");
+					}
+					
+				} else {
+					player.sendMessage("§cTu possède déjà cet objet");
+				}
+				
+				break;
+				
+
+
+			default:
+				break;
+			}
+		}
+	}
+	
+}

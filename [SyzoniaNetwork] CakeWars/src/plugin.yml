@@ -1,0 +1,7 @@
+main: fr.syzonia.cakewars.Main
+author: Lyxann
+version: 0.1
+name: Cakewars
+description: Plugin CakeWars --> Dev Lyxann --> En développement actuellement --> Non relier à la base de données.
+commands:
+    game:

@@ -1,0 +1,135 @@
+package fr.syzonia.syzodb.mysql.vetements;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
+
+import fr.syzonia.syzodb.mysql.MySql;
+
+public class UseVetements {
+
+
+	public void setChapeauxInUse(UUID uuid, int i) {
+		try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("UPDATE players SET use_chapeaux = ? WHERE uuid_player = ?");
+				preparedStatement.setInt(1, i);
+				preparedStatement.setString(2, uuid.toString());
+				preparedStatement.executeUpdate();
+				preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getChapeauxInUse(UUID uuid) {
+			try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("SELECT use_chapeaux FROM players WHERE uuid_player = ?");
+				preparedStatement.setString(1, uuid.toString());
+				ResultSet rs = preparedStatement.executeQuery();
+				int use_chapeaux = 0;
+						while (rs.next()) {
+							use_chapeaux = rs.getInt("use_chapeaux");
+						}
+						preparedStatement.close();
+				return use_chapeaux;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+	
+
+	public void setPullUse(UUID uuid, int i) {
+		try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("UPDATE players SET use_pull = ? WHERE uuid_player = ?");
+				preparedStatement.setInt(1, i);
+				preparedStatement.setString(2, uuid.toString());
+				preparedStatement.executeUpdate();
+				preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getPullInUse(UUID uuid) {
+			try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("SELECT use_pull FROM players WHERE uuid_player = ?");
+				preparedStatement.setString(1, uuid.toString());
+				ResultSet rs = preparedStatement.executeQuery();
+				int use_pull = 0;
+						while (rs.next()) {
+							use_pull = rs.getInt("use_pull");
+						}
+						preparedStatement.close();
+				return use_pull;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+	
+	
+
+	public void setPantalonUse(UUID uuid, int i) {
+		try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("UPDATE players SET use_pantalon = ? WHERE uuid_player = ?");
+				preparedStatement.setInt(1, i);
+				preparedStatement.setString(2, uuid.toString());
+				preparedStatement.executeUpdate();
+				preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getPantalonInUse(UUID uuid) {
+			try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("SELECT use_pantalon FROM players WHERE uuid_player = ?");
+				preparedStatement.setString(1, uuid.toString());
+				ResultSet rs = preparedStatement.executeQuery();
+				int use_pantalon = 0;
+						while (rs.next()) {
+							use_pantalon = rs.getInt("use_pantalon");
+						}
+						preparedStatement.close();
+				return use_pantalon;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+	
+	
+
+	public void setChaussuresUse(UUID uuid, int i) {
+		try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("UPDATE players SET use_chaussure = ? WHERE uuid_player = ?");
+				preparedStatement.setInt(1, i);
+				preparedStatement.setString(2, uuid.toString());
+				preparedStatement.executeUpdate();
+				preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getChaussuresInUse(UUID uuid) {
+			try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("SELECT use_chaussure FROM players WHERE uuid_player = ?");
+				preparedStatement.setString(1, uuid.toString());
+				ResultSet rs = preparedStatement.executeQuery();
+				int use_chaussure = 0;
+						while (rs.next()) {
+							use_chaussure = rs.getInt("use_chaussure");
+						}
+						preparedStatement.close();
+				return use_chaussure;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+	
+	
+}

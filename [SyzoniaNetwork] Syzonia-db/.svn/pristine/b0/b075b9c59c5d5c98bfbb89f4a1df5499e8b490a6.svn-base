@@ -1,0 +1,38 @@
+package fr.syzonia.syzodb.mysql;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
+
+public class RewardsManager {
+
+	public void setRewardsFound(UUID uuid, boolean b) {
+		try {
+				PreparedStatement preparedStatement = DatabaseManager.getConnexion().prepareStatement("UPDATE players SET rewards_found = ? WHERE uuid_player = ?");
+				preparedStatement.setBoolean(1, b);
+				preparedStatement.setString(2, uuid.toString());
+				preparedStatement.executeUpdate();
+				preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean getRewardsFound(UUID uuid) {
+		try {
+			PreparedStatement preparedStatement = DatabaseManager.getConnexion().prepareStatement("SELECT rewards_found FROM players WHERE uuid_player = ?");
+			preparedStatement.setString(1, uuid.toString());
+			ResultSet rs = preparedStatement.executeQuery();
+			boolean b = false;
+					while (rs.next()) {
+						b = rs.getBoolean("rewards_found");
+					}
+					preparedStatement.close();
+			return b;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+}

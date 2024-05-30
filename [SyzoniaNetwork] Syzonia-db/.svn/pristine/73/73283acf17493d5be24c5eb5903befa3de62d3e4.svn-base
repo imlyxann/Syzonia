@@ -1,0 +1,24 @@
+package fr.syzonia.syzodb.central;
+
+import fr.syzonia.syzodb.server.ServersCommon;
+
+public class Servers {
+
+	public String name;
+	
+	public Servers(String name) {
+		this.name = name;
+	}
+	
+	public String getIp() {
+		return ServersCommon.getIp(name);
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public int getPort() {
+		return ServersCommon.getPort(name);
+	}
+}

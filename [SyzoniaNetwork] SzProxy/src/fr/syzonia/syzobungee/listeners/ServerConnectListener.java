@@ -1,0 +1,29 @@
+package fr.syzonia.syzobungee.listeners;
+
+import fr.syzonia.syzobungee.Main;
+
+import fr.syzonia.syzobungee.loadbalancer.HubBalancer;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
+
+public class ServerConnectListener implements Listener {
+
+	 @EventHandler
+	 public void ServerConnect(ServerConnectEvent event) {
+		 if(Main.HubForcedConnected && event.getReason() == Reason.JOIN_PROXY) {
+			 HubBalancer hubbalancer = new HubBalancer();
+			 
+			 if(hubbalancer.isHubPresent()) {
+				 ServerInfo info = hubbalancer.ConnectPlayerWithLeastPlayers();
+				 event.setTarget(info);
+			 } else {
+				 event.getPlayer().disconnect(new TextComponent("§cIl n'y a pas de Hubs disponible..."));
+			 }
+		 }
+	 }
+	
+}

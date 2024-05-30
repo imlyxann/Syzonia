@@ -1,0 +1,113 @@
+package fr.syzonia.moderationtool.listeners;
+
+import org.bukkit.Bukkit;
+
+
+
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import fr.syzonia.moderationtool.Main;
+import fr.syzonia.moderationtool.cmds.VanishCommand;
+import fr.syzonia.moderationtool.playerconnection.PlayerConnection;
+import fr.syzonia.syzodb.mysql.BanManager;
+import fr.syzonia.syzodb.mysql.PlayerInfo;
+import fr.syzonia.syzodb.rank.Rank;
+
+public class PlayerListener implements Listener {
+	
+	@EventHandler
+	public void playerJoin(PlayerJoinEvent event) {
+		
+		if(new BanManager().isBanned(event.getPlayer().getUniqueId())) {
+			event.setJoinMessage(null);
+			return;
+		}
+		
+		new PlayerConnection().setSpigotConnected(event.getPlayer().getUniqueId(), true);
+		
+		PlayerInfo playerinfo = new PlayerInfo(event.getPlayer().getUniqueId());
+		startRunnable(event.getPlayer(), playerinfo);
+		
+	}
+	
+	public void startRunnable(Player player, PlayerInfo playerinfo) {
+		Bukkit.getScheduler().runTaskTimer(Main.Instance, new Runnable() {
+			
+			@Override
+			public void run() {
+				if(player.isOnline()) {
+					fr.syzonia.syzodb.Main.Instance.database.setRankName(player.getUniqueId(), Rank.PowerToRank(playerinfo.getRank()).getName());
+				} 
+			}
+		}, 0, 10L);
+	}
+	
+	@EventHandler
+	public void PlayerQuit(PlayerQuitEvent event) {
+		
+		if(new BanManager().isBanned(event.getPlayer().getUniqueId())) {
+			event.setQuitMessage(null);
+			return;
+		}
+		
+		new PlayerConnection().setSpigotConnected(event.getPlayer().getUniqueId(), false);
+		
+		
+		if(Main.PlayerFreeze.contains(event.getPlayer().getName())) {
+			new BanManager().ban(event.getPlayer().getUniqueId(), -1, "Deco Freeze", "AutoBan");
+		}
+		
+		if(VanishCommand.VanishPlayers.contains(event.getPlayer().getName())) {
+			VanishCommand.VanishPlayers.remove(event.getPlayer().getName());
+			for(Player others : Bukkit.getOnlinePlayers()) {
+				others.showPlayer(event.getPlayer());
+			}
+		   event.getPlayer().sendMessage("§aTu est visible.");
+		}
+		
+	}
+	
+	 @EventHandler
+	   public void PlayerCommand(PlayerCommandPreprocessEvent event) {
+	      if(event.getMessage().contains("plugins") || event.getMessage().contains("pl")) {
+	    	  Player player = event.getPlayer();
+	  		
+	  			event.setCancelled(true);
+	  			player.sendMessage("");
+	  			player.sendMessage("§6Syzonia §f|| §aListe des plugins!");
+	  			if(Main.Instance.getServer().getPluginManager().isPluginEnabled("Syzonia-db")) player.sendMessage("§dSyzonia-db §f» §ePlugin db de Syzonia");
+	  			if(Main.Instance.getServer().getPluginManager().isPluginEnabled("Core")) player.sendMessage("§dCore §f» §ePlugin D'API de Syzonia");
+	  			if(Main.Instance.getServer().getPluginManager().isPluginEnabled("Hub")) player.sendMessage("§dHub §f» §ePlugin Lobby de Syzonia");
+	  			if(Main.Instance.getServer().getPluginManager().isPluginEnabled("CakeWars")) player.sendMessage("§dCakeWars §f» §ePlugin CakeWars de Syzonia");
+	  			if(Main.Instance.getServer().getPluginManager().isPluginEnabled("ModerationTool")) player.sendMessage("§dModerationTool §f» §ePlugin Modération de Syzonia");
+	  			if(Main.Instance.getServer().getPluginManager().isPluginEnabled("SyzoWolf")) player.sendMessage("§dSyzoWolf §f» §ePlugin AntiCheat de Syzonia");
+	  		   if(Main.Instance.getServer().getPluginManager().isPluginEnabled("SyzoWolfDb")) player.sendMessage("§dSyzoWolfDb §f» §ePlugin Bdd de SyzoWolf de Syzonia");
+	  			player.sendMessage("");
+	      }
+	}
+	
+	@EventHandler
+	public void PlayerTalk(AsyncPlayerChatEvent event) {
+		if(VanishCommand.VanishPlayers.contains(event.getPlayer().getName())) {
+		   event.setCancelled(true);
+		   event.getPlayer().sendMessage("§cTu ne peux pas parler quand tu es freeze.");
+		}
+	}
+
+	@EventHandler
+	public void PlayerMove(PlayerMoveEvent event) {
+		if(Main.PlayerFreeze.contains(event.getPlayer().getName())) {
+			event.setTo(event.getFrom());
+		}
+	}
+	
+	
+}

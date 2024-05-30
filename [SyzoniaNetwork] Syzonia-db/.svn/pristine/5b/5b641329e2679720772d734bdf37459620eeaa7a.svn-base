@@ -1,0 +1,58 @@
+package fr.syzonia.syzodb.rank;
+
+import java.util.UUID;
+
+import fr.syzonia.syzodb.utils.Symbol;
+
+public class Syzorank {
+	
+	public int powerrank;
+	
+	public Syzorank(int PowerRank) {
+		this.powerrank = PowerRank;
+	}
+	
+	public String getDisplayName(UUID uuid) {
+		Symbol legendsymbol = new Symbol();
+		
+		switch (powerrank) {
+		case 0:
+			
+			return "§7Joueur";
+			
+		case 1:
+			
+			return "§eVIP";
+			
+		case 2:
+			
+			return "§aVIP+";
+			
+		case 3:
+			
+			return "§3Legend " + legendsymbol.getSymbol(uuid);
+			
+		case 4:
+			
+			return "§cYT";
+			
+		case 5:
+			
+			return "§5Modo";
+			
+		case 6:
+			
+			return "§eSuper-Modo";
+			
+		case 7:
+			
+			return "§4Admin";
+			
+		default:
+			break;
+		}
+		
+		return null;
+	}
+	
+}

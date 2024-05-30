@@ -1,0 +1,53 @@
+package fr.syzonia.hub.VirtualMenu;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+public class VirtualMenu {
+
+	public int size;
+	public String invname;
+	public Inventory inv;
+	
+	public VirtualMenu(String invName, int size) {
+		this.invname = invName;
+		this.size = size;
+		inv = Bukkit.createInventory(null, size, invName);
+	}
+	
+	public void setItem(int slot, ItemStack item) {
+		inv.setItem(slot, item);	
+	}
+	
+	public void addItem(ItemStack item) {
+		inv.addItem(item);
+	}
+	
+	public void clear() {
+		inv.clear();
+	}
+	
+	
+	public void OpenInventory(Player player) {
+		player.openInventory(inv);
+	}
+	
+	public boolean InvCountains(ItemStack item) {
+		if(inv.contains(item)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public String getTitle() {
+		return inv.getTitle();
+	}
+	
+	public int getSize() {
+		return inv.getSize();
+	}
+	
+	
+}

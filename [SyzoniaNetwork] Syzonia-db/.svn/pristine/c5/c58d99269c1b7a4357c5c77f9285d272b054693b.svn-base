@@ -1,0 +1,327 @@
+package fr.syzonia.syzodb.mysql.game;
+
+import java.sql.PreparedStatement;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import fr.syzonia.syzodb.mysql.MySql;
+
+public class CakeWarsGameManager {
+
+	public void registerGame(String servername, String status, int port, String map, int max_players, String ip, int maintenance, String type) {
+		if(!isRegister(servername)) {
+			try {
+				
+				PreparedStatement stat = MySql.getConnexion().prepareStatement("INSERT INTO cakewars_server (game_type, server_name, status, Map, max_player, ip, port, maintenance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+				stat.setString(1, type);
+				stat.setString(2, servername);
+				stat.setString(3, status);
+				stat.setString(4, map);
+				stat.setInt(5, max_players);
+				stat.setString(6, ip);
+				stat.setInt(7, port);
+				stat.setInt(8, maintenance);
+				stat.execute();
+				stat.close();
+ 
+			}catch (SQLException e){
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				
+				PreparedStatement stat = MySql.getConnexion().prepareStatement("UPDATE cakewars_server SET game_type = ?, server_name = ?, status = ?, Map = ?, max_player = ?, ip = ?, port= ?, maintenance = ? WHERE server_name = '" + servername + "'");
+				stat.setString(1, type);
+				stat.setString(2, servername);
+				stat.setString(3, status);
+				stat.setString(4, map);
+				stat.setInt(5, max_players);
+				stat.setString(6, ip);
+				stat.setInt(7, port);
+				stat.setInt(8, maintenance);
+				stat.executeUpdate();
+				stat.close();
+				
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	
+	public int getServers() {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT * FROM `cakewars_server` WHERE 1");
+			ResultSet rs = stat.executeQuery();
+			int servers = 0;
+			
+			while (rs.next()) {
+				servers++;
+			}
+			
+			return servers;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+ 
+	public boolean isRegister(String servername) {
+		try {
+		   
+		    PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("SELECT server_name FROM cakewars_server WHERE server_name = ?");
+		    preparedStatement.setString(1, servername);
+		    ResultSet rs = preparedStatement.executeQuery();
+ 
+		    while(rs.next()) {
+		    	return true;
+		    }
+		    
+		    preparedStatement.close();
+		    return false;
+		    
+	
+ 
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public void DelGame(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("DELETE FROM cakewars_server WHERE server_name = '" + servername + "'");
+			stat.executeUpdate();
+			stat.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public String getMap(String servername) {
+			try {
+				
+				PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT map FROM cakewars_server WHERE server_name = ?");
+				stat.setString(1, servername);
+				ResultSet rs = stat.executeQuery();
+				String map = "";
+				
+				while(rs.next()) {
+					map = rs.getString("map");
+				}
+				
+				stat.close();
+				
+				return map;
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return "";
+			}
+			
+		}
+	
+	public String getStatus(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT status FROM cakewars_server WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			String status = "";
+			
+			while(rs.next()) {
+				status = rs.getString("status");
+			}
+			
+			stat.close();
+			
+			return status;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	public String getIp(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT ip FROM cakewars_server WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			String ip = "";
+			
+			while(rs.next()) {
+				ip = rs.getString("ip");
+			}
+			
+			stat.close();
+			
+			return ip;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	public int getPort(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT port FROM cakewars_server WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			int port = 0;
+			
+			while(rs.next()) {
+				port = rs.getInt("port");
+			}
+			
+			stat.close();
+			
+			return port;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public int getMaxPlayer(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT max_player FROM cakewars_server WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			int players = 0;
+			
+			while(rs.next()) {
+				players = rs.getInt("max_player");
+			}
+			
+			stat.close();
+			
+			return players;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public int isInMaitenance(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT maintenance FROM cakewars_server WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			int maintenu = 0;
+			
+			while(rs.next()) {
+				maintenu = rs.getInt("maintenance");
+			}
+			
+			stat.close();
+			
+			return maintenu;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public String getGameStatus(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT status FROM cakewars_server WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			String status = "";
+			
+			while(rs.next()) {
+				status = rs.getString("status");
+			}
+			
+			stat.close();
+			
+			return status;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	public String getType(String servername) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT game_type FROM cakewars_server WHERE server_name = ?");
+			stat.setString(1, servername);
+			ResultSet rs = stat.executeQuery();
+			String type = "";
+			
+			while(rs.next()) {
+				type = rs.getString("game_type");
+			}
+			
+			stat.close();
+			
+			return type;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	public String getServerName(int id) {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT server_name FROM cakewars_server WHERE id = ?");
+			stat.setInt(1, id);
+			ResultSet rs = stat.executeQuery();
+			String name = "";
+			
+			while(rs.next()) {
+				name = rs.getString("server_name");
+			}
+			
+			stat.close();
+			
+			return name;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	public int getAllGames() {
+		try {
+			
+			PreparedStatement stat = MySql.getConnexion().prepareStatement("SELECT * FROM `cakewars_server` WHERE 1");
+			ResultSet rs = stat.executeQuery();
+			int servers = 0;
+			
+			while(rs.next()) {
+				servers++;
+			}
+			
+			stat.close();
+			
+			return servers;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+}

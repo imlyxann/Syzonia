@@ -1,0 +1,26 @@
+package fr.syzonia.hub.finezherbe;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import fr.syzonia.syzodb.Main;
+
+public class FineZherbeUtils {
+ 
+	public static void Appliquer(Player player) {
+		if(Main.Instance.database.getSeePlayer(player.getUniqueId()) == 1) {
+			for(Player players : Bukkit.getOnlinePlayers()) {
+				if(!players.equals(player)) {
+					player.hidePlayer(players);
+				}
+			}
+		} else {
+			for(Player players : Bukkit.getOnlinePlayers()) {
+				if(!players.equals(player)) {
+					player.showPlayer(players);
+				}
+			}
+		}
+	}
+	
+}

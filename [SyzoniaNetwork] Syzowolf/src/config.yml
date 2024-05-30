@@ -1,0 +1,17 @@
+#         SyzoWolf  
+#   Made by Lyxann with ❤️
+
+
+dev-mod: false
+
+checks:
+  aura: 0
+  speed: 0
+  fly: 0
+  antikb: 0
+  reach: 0
+  nofall: 0
+  climb: 0
+
+
+  

@@ -1,0 +1,99 @@
+package fr.syzonia.hub.VirtualMenu.Friends;
+
+import java.sql.PreparedStatement;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+
+import fr.syzonia.core.item.ItemBuilder;
+import fr.syzonia.syzodb.mysql.MySql;
+import fr.syzonia.syzodb.mysql.friends.FriendBDD;
+import fr.syzonia.hub.VirtualMenu.VirtualMenu;
+
+public class VirtualFriends extends VirtualMenu implements Listener{
+
+	public VirtualFriends() {
+		super("§cFriends", 9 * 6);
+	}
+
+	public void open(Player player) {
+		FriendBDD friendsBdd = new FriendBDD();
+		int x = 0;
+		if(friendsBdd.getFriendsCounter(player.getName()) == 0) {
+			this.setItem(22, new ItemBuilder().type(Material.PAPER).name("§cVous n'avez pas d'amis").build());
+			OpenInventory(player);
+			return;
+		}
+		
+		// TODO Paginated GUI
+		
+		for(String friends : friendsBdd.getFriendList(player.getName())) {
+			this.setItem(x, new ItemBuilder().type(Material.SKULL_ITEM).data((byte) 3).name("§d" + friends).setSkullOwner(friends).lore(getBungeeConnected(MySql.getUUID(friends)) == false ? "§cOffline" : "§aOnline", "§e(Clique) Pour Envoyer un Msg à " + friends).build());
+			x++;
+			if(x >= 53) break;
+		}
+		OpenInventory(player);
+	}
+	
+	@EventHandler
+	public void onClick(InventoryClickEvent event) {
+		if(event.getCurrentItem() == null && event.getAction() != null) return;
+		
+		if(event.getInventory().getName().equalsIgnoreCase("§cFriends")) {
+			event.setCancelled(true);
+			
+			Player player = (Player) event.getWhoClicked();
+			switch (event.getCurrentItem().getType()) {
+			
+			case SKULL_ITEM:
+				
+				player.closeInventory();
+				player.sendMessage("§6Fais §f» §d/msg " + event.getCurrentItem().getItemMeta().getDisplayName().substring(2));
+				
+				break;
+			
+			default:
+				break;
+			}
+			
+		}
+	}
+	
+	public void setBungeeConnected(UUID uuid, Boolean i) {
+		try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("UPDATE connection SET isBungeeConnected = ? WHERE uuid_player = ?");
+				preparedStatement.setBoolean(1, i);
+				preparedStatement.setString(2, uuid.toString());
+				preparedStatement.executeUpdate();
+				preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean getBungeeConnected(UUID uuid) {
+			try {
+				PreparedStatement preparedStatement = MySql.getConnexion().prepareStatement("SELECT isBungeeConnected FROM connection WHERE uuid_player = ?");
+				preparedStatement.setString(1, uuid.toString());
+				ResultSet rs = preparedStatement.executeQuery();
+				boolean yes = false;
+						while (rs.next()) {
+							yes = rs.getBoolean("isBungeeConnected");
+						}
+						preparedStatement.close();
+				return yes;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
+	
+	
+}

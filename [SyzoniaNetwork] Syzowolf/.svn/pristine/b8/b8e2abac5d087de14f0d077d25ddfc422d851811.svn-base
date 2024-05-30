@@ -1,0 +1,93 @@
+package fr.syzonia.syzowolf.check;
+
+import java.util.UUID;
+
+
+import org.bukkit.Bukkit;
+
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+
+import fr.syzonia.syzodb.mysql.DatabaseManager;
+import fr.syzonia.syzowolf.Main;
+import fr.syzonia.syzowolf.SyzoPlayer;
+import fr.syzonia.syzowolfdb.violations.ViolationManager;
+
+public class Flags {
+
+	public static void flag(String player, String type, String cache) {
+		ViolationManager vm = new ViolationManager();
+		UUID uuid = DatabaseManager.getUUID(player);
+		SyzoPlayer syzoplayer = Main.SyzoPlayers.get(Bukkit.getPlayer(player));
+
+		
+		switch (type) {
+		
+		case "SpeedHack":
+		
+			vm.addViolations(uuid, type, cache.toString());
+			syzoplayer.updatedSpeedViolations();
+			sendToModo(player, type, cache);
+			
+		break;
+		
+		case "Fly":
+			
+			vm.addViolations(uuid, type, cache.toString());
+		
+			break;
+			
+		case "Aura":
+			
+			vm.addViolations(uuid, type, cache.toString());
+			
+			break;
+			
+		case "Climb":
+			
+			vm.addViolations(uuid, type, cache.toString());
+			
+			break;
+
+		case "Anti-Velocity":
+			
+			vm.addViolations(uuid, type, cache.toString());
+			
+			break;
+			
+		case "Reach":
+			
+			vm.addViolations(uuid, type, cache.toString());
+			
+			break;
+			
+		case "NoFall":
+			
+			vm.addViolations(uuid, type, cache.toString());
+			
+			break;
+			
+		case "BadPacket":
+			
+			vm.addViolations(uuid, type, cache.toString());
+			sendToModo(player, type, cache);
+			
+			break;
+			
+
+		default:
+			break;
+		}
+		
+	}
+	
+	public static void sendToModo(String player, String type, String cache) {
+		ByteArrayDataOutput out;
+		out = ByteStreams.newDataOutput();
+	 	out.writeUTF("syzowolfflag");
+        out.writeUTF("§l§d[§5SyzoWolf§d] §r§6" + player + " §d§o§l---> §r§4" + type + " §c(" + Cache.getLevel(cache) +")");
+        Bukkit.getServer().sendPluginMessage(Main.Instance, "BungeeCord", out.toByteArray());
+	}
+	
+	
+}

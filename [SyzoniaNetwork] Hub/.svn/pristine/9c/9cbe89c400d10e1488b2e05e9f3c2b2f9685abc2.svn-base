@@ -1,0 +1,98 @@
+package fr.syzonia.hub.VirtualMenu.Preferences;
+
+import org.bukkit.Material;
+
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+
+import fr.syzonia.syzodb.Main;
+import fr.syzonia.syzodb.mysql.data.PlayerBdd;
+import fr.syzonia.hub.VirtualMenu.VirtualMenu;
+import fr.syzonia.hub.finezherbe.FineZherbeUtils;
+import fr.syzonia.hub.item.ItemBuilder;
+
+public class VirtualPref extends VirtualMenu implements Listener{
+
+	public VirtualPref() {
+		super("§cPréférences", 9 * 1);
+	}
+	
+	public void open(Player player) {
+		PlayerBdd prefUtils = new PlayerBdd();
+		this.setItem(1, new ItemBuilder().type(Material.PAPER).name("§dActiver les Messages Privés").lore("§eLes Messages privés sont " + (prefUtils.isEnabled(player.getUniqueId()) == 1 ? "§aActivés" : "§cDésactivés")).build());
+		this.setItem(4, new ItemBuilder().type(Material.BOOK).name("§dActiver les Demandes d'amis").lore("§eLes Demandes d'amis sont " + (prefUtils.isAllow(player.getName()) == 1 ? "§aActivés" : "§cDésactivés")).build());
+		this.setItem(7, new ItemBuilder().type(Material.SULPHUR).name("§dActiver la visibilité des Joueurs").lore("§eLa Visibilité est " + (Main.getInstance().database.getSeePlayer(player.getUniqueId()) == 1 ? "§aActivés" : "§cDésactivés")).build());
+		OpenInventory(player);
+	}
+
+	@EventHandler
+	public void PlayerInv(InventoryClickEvent event) {
+		if(event.getCurrentItem() == null && event.getAction() != null) return;
+		
+		if(event.getInventory().getName().equalsIgnoreCase("§cPréférences")) {
+			
+			Player player = (Player) event.getWhoClicked();
+			VirtualPref virtualPref = new VirtualPref();
+			PlayerBdd prefUtils = new PlayerBdd();
+			
+			switch (event.getCurrentItem().getType()) {
+			case PAPER:
+					
+				if(prefUtils.isEnabled(player.getUniqueId()) == 1) {
+					prefUtils.setEnabled(0, player.getUniqueId());
+					player.playSound(player.getEyeLocation(), Sound.ITEM_PICKUP, 3, 3);
+					virtualPref.open(player);
+				} else {
+				    prefUtils.setEnabled(1, player.getUniqueId());
+				    player.playSound(player.getEyeLocation(), Sound.ITEM_PICKUP, 3, 3);
+					virtualPref.open(player);
+				}
+				
+				break;
+				
+			case BOOK:
+				
+				if(prefUtils.isAllow(player.getName()) == 1) {
+					prefUtils.setAllow(0, player.getName());
+					player.playSound(player.getEyeLocation(), Sound.ITEM_PICKUP, 3, 3);
+					virtualPref.open(player);
+				} else {
+					prefUtils.setAllow(1, player.getName());
+					player.playSound(player.getEyeLocation(), Sound.ITEM_PICKUP, 3, 3);
+					virtualPref.open(player);
+				}
+				
+				break;
+				
+			case SULPHUR:
+				
+				if(Main.getInstance().database.getSeePlayer(player.getUniqueId()) == 1) {
+					Main.getInstance().database.setCanseePlayer(player.getUniqueId(), 0);
+					player.playSound(player.getEyeLocation(), Sound.ITEM_PICKUP, 3, 3);
+					FineZherbeUtils.Appliquer(player);
+					virtualPref.open(player);
+					player.sendMessage("§cJoueurs Désactivés");
+				} else {
+					Main.getInstance().database.setCanseePlayer(player.getUniqueId(), 1);
+					player.playSound(player.getEyeLocation(), Sound.ITEM_PICKUP, 3, 3);
+					FineZherbeUtils.Appliquer(player);
+					virtualPref.open(player);
+					player.sendMessage("§aJoueurs Activés");
+				}
+				
+				break;
+
+				
+				
+
+			default:
+				break;
+			}
+		}
+	}
+	
+	
+}

@@ -1,0 +1,37 @@
+package fr.syzonia.cakewars.team.inv;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+
+import fr.syzonia.cakewars.team.TeamEnum;
+import fr.syzonia.core.gui.GuiManager;
+import fr.syzonia.core.item.ItemBuilder;
+
+public class InvTeam extends GuiManager implements Listener{
+
+	public InvTeam() {
+		super("§cLes équipes", 9 * 1);
+	}
+	
+	public void open(Player player) {
+		for(int x = 1; x <= 8; x++) {
+			inv.addItem(new ItemBuilder().type(Material.INK_SACK).data((byte) x).name(TeamEnum.getTeamByAnNumber(x).getName()).amount(x).build());
+		}
+		player.openInventory(inv);
+	}
+	
+	@EventHandler
+	public void onClick(InventoryClickEvent event) {
+		if(event.getCurrentItem() == null && event.getAction() != null) return;
+		
+		if(event.getInventory().getName().equalsIgnoreCase("§cLes équipes")) {
+			event.setCancelled(true);
+			
+			
+		}
+	}
+	
+}

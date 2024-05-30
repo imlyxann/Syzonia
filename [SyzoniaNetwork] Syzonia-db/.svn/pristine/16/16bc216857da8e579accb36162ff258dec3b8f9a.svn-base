@@ -1,0 +1,67 @@
+package fr.syzonia.syzodb.rank;
+
+import java.util.HashMap;
+
+import java.util.Map;
+
+public enum Rank {
+
+
+	PLAYER(0,"§a§cAdmin",  "§7Joueur", "§7[Joueur]", "Joueur"),
+	VIP(1, "§e§cAdmin", "§eVIP", "§e[Vip]", "Vip"),
+	VIPPLUS(2, "§e§c§aAdmin", "§aVIP+", "§a[Vip+]", "Vip+"), 
+	MYTHIQUE(3, "§e§c§aAdmin", "§3Legend", "§3Legend", "Legend"),
+	YOUTUBEUR(4, "§e§cAdmin", "§cYoutubeur", "§c[Youtubeur]", "Youtubeur"),
+	MODO(5, "§6§cAdmin", "§5Modérateur", "§5[Mod]", "Mod"), 
+	SuperMODO(6, "§6§cAdmin", "§6Super-Modérateur", "§6[Super-Mod]", "Super-Mod"), 
+	ADMIN(7, "§1Admin", "§4Admin", "§4[Admin]", "Admin");
+	
+	private int power;
+	private String name, orderRank, displayName, Name;
+	Rank rank;
+	public static Map<Integer, Rank> ranks = new HashMap<>();
+	
+	private Rank(int power, String orderRank ,String name, String displayName, String Name) {
+		this.power = power;
+		this.name = name;
+		this.orderRank = orderRank;
+		this.displayName = (displayName);
+		this.Name = Name;
+	}
+	
+	static {
+		for (Rank rank : Rank.values()){
+			ranks.put(rank.getPower(), rank);
+		}
+	}
+
+	public static Rank PowerToRank(int power) {
+		return ranks.get(power);
+	}
+	
+	public static Rank getPowerRank(int power) {
+		return ranks.get(power);
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public Integer getPower() {
+		return power;
+	}
+	
+	public String getOrderRank() {
+		return orderRank;
+	}
+	
+	public String getRankName() {
+		return Name;
+	}
+
+	public String getTestDisplayName() {
+		return displayName;
+	}
+
+	
+}

@@ -1,0 +1,85 @@
+package fr.syzonia.moderationtool.ban;
+
+import java.io.ByteArrayOutputStream;
+
+
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
+
+
+import fr.syzonia.syzodb.mysql.BanManager;
+import fr.syzonia.syzodb.mysql.MySql;
+import fr.syzonia.moderationtool.Main;
+import fr.syzonia.moderationtool.playerconnection.PlayerConnection;
+
+public class Ban extends BukkitRunnable{
+
+	static UUID uuid;
+	String reason;
+	Long time;
+	
+	public Ban(UUID uuid, long time, String reason) {
+		Ban.uuid = uuid;
+		this.time = time;
+		this.reason = reason;
+		
+	}
+	
+	@Override
+	public void run() {
+		
+		if(new PlayerConnection().getSpigotConnected(uuid) == false) {
+            setBdd(uuid, time, reason);
+			cancel();
+		}
+		
+	}
+	
+	public static void disconnectBungee(String name, long end, String reason) {
+			ByteArrayOutputStream b = new ByteArrayOutputStream();
+			DataOutputStream out = new DataOutputStream(b);
+			
+			try {
+				
+				out.writeUTF("banplayer");
+				out.writeUTF(name);
+				out.writeUTF(
+						"§r----- §6§lSyzonia §r- §cSanction §r-----\n " +
+			 			"§7» §e§lVous avez été banni de Syzonia..." +
+			 			"\n" +
+		                "\n§7Motif: §4" + reason +
+		                "\n§cCette penalité prend dans " + new BanManager().getTimeWithoutSQL(uuid, new BanManager().getMillisEnd(end)) +
+		                "\n " +
+		                "\n§bPour faire appel à cette sanction, rendez-vous sur le discord, merci." +
+		                "\nhttps://dsc.gg/syzonia" + 
+		                "\n§r---------------------------");
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			 Bukkit.getServer().sendPluginMessage(Main.Instance, "BungeeCord", b.toByteArray());
+	}
+	
+	public void setBdd(UUID uuid, Long endInSeconds, String reason) {
+		  try {
+	            PreparedStatement sts = MySql.getConnexion().prepareStatement("INSERT INTO bans (player_uuid, end, reason) VALUES (?, ?, ?)");
+	            sts.setString(1, uuid.toString());
+	            sts.setLong(2, new BanManager().getMillisEnd(endInSeconds));
+	            sts.setString(3, reason);
+	            sts.executeUpdate();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	}
+
+	
+	
+}
