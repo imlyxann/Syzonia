@@ -7,6 +7,7 @@ import fr.syzonia.syzobungee.commands.MaintenanceCmd;
 import fr.syzonia.syzobungee.commands.MoveCommand;
 import fr.syzonia.syzobungee.commands.MuteCommand;
 import fr.syzonia.syzobungee.commands.ServerCommand;
+import fr.syzonia.syzobungee.commands.ServersCommand;
 import fr.syzonia.syzobungee.commands.TestCommand;
 import fr.syzonia.syzobungee.commands.UnMuteCommand;
 import fr.syzonia.syzobungee.listeners.AsyncChatListener;
@@ -53,6 +54,7 @@ public class Main extends Plugin{
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new HubCommand());
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new MoveCommand());
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new ServerCommand());
+		ProxyServer.getInstance().getPluginManager().registerCommand(this, new ServersCommand());
 	}
 	
 	@Override

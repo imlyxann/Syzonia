@@ -20,14 +20,14 @@ public class PreloginListener implements Listener {
 	     try {
 			if (VpnCheck.isUsingVPN(playerIP)) {
 			    event.setCancelled(true);
-			    event.setCancelReason(new TextComponent("§6SyzoWolf\n\n§cVpn ou Proxy detécté!\n§aMerci de le désactiver."));
+			    event.setCancelReason(new TextComponent("§6SyzoWolf\n§cVpn ou Proxy detécté!\n§aMerci de le désactiver."));
 			 }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	     
 	     if (AntiDdos.getConnectionCount(playerIP) >= AntiDdos.maxConnectionsPerIP) {
-	         event.setCancelReason("§6Syzonia\n\n§cTrop de connexions depuis cette adresse IP.\n§aMerci de contacter le support: dsc.gg/syzonia");
+	         event.setCancelReason("§6Syzonia\n§cTrop de connexions depuis cette adresse IP.\n§aMerci de contacter le support: dsc.gg/syzonia");
 	         event.setCancelled(true);
 	         return;
 	    }

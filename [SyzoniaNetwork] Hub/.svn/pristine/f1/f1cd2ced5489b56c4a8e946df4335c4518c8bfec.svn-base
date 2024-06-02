@@ -92,8 +92,8 @@ public class LoadMainMenuItem {
 		ItemStack TpMenu = new ItemBuilder().type(Material.COOKIE).name("§6Téléportation").lore("§cLes Hubs disponibles!").build();
 		ItemStack preferances = new ItemBuilder().type(Material.PAPER).name("§6Vos Préférences").lore("§cModifier vos préférences").build();
 		ItemStack vip = new ItemBuilder().type(Material.DIAMOND_AXE).name("§6Vip").lore("§cMenu pour les Vip!").build();
-		ItemStack Stats = new ItemBuilder().type(Material.FLINT_AND_STEEL).name("§6Statistiques").lore("§cVos stats").build();
-		ItemStack SyzoWolf = new ItemBuilder().type(Material.SUGAR).name("§aSyzowolf").lore("§6Syzowolf est l'anticheat de Syzonia", "§eIl comporte: ", "§d-Fly", "§d-SpeedHack", "§d-KillAura", "§d-Aim", "§d-Climb", "", "§6§a» §cLyxann").build();
+		ItemStack Stats = new ItemBuilder().type(Material.PAPER).name("§6Statistiques").lore("§cVos stats").build();
+		ItemStack SyzoWolf = new ItemBuilder().type(Material.DIAMOND_HOE).name("§aSyzowolf").lore("§cSyzowolf est l'anticheat de Syzonia\n§cIl comporte: \n§d-Fly\n§d-SpeedHack\n§d-KillAura\n§d-Aim\n§d-Climb\n\n§6§a» §cLyxann!").build();
 		
 		
 		// Glass
@@ -114,7 +114,7 @@ public class LoadMainMenuItem {
 		
 		inv.setItem(2, Stats);
 		inv.setItem(4, vip);
-		inv.setItem(6, SyzoWolf);
+		inv.setItem(9, SyzoWolf);
 		inv.setItem(25, BOUTIQUE);
 		inv.setItem(22, MINIGAMES);
 		inv.setItem(49, Quit);
