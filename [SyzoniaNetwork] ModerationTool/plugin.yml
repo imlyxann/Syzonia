@@ -16,3 +16,5 @@ commands:
       description: Commande permettant de Report un joueur.
     vanish:
       description: Commande permettant d'utiliser le Vanish.      
+    ss:
+      description: sanction

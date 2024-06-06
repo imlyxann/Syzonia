@@ -15,6 +15,7 @@ import fr.syzonia.moderationtool.cmds.UnBanCommand;
 import fr.syzonia.moderationtool.cmds.UnFreezeCommand;
 import fr.syzonia.moderationtool.cmds.VanishCommand;
 import fr.syzonia.moderationtool.listeners.PlayerListener;
+import fr.syzonia.moderationtool.sanctions.Sanction;
 
 public class Main extends JavaPlugin{
 	
@@ -33,6 +34,7 @@ public class Main extends JavaPlugin{
 		getCommand("report").setExecutor(new ReportCommand());
 		getCommand("vanish").setExecutor(new VanishCommand());
 		getCommand("ban").setExecutor(new BanCommand());
+		getCommand("ss").setExecutor(new Sanction());
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new PlayerListener(), Instance);

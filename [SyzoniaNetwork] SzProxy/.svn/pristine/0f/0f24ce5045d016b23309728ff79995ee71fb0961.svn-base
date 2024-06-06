@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Comparator;
 
 import fr.syzonia.bungeedb.mysql.DatabaseManager;
-import fr.syzonia.syzobungee.utils.ConfigHelp;
 
 public class Servers {
 
@@ -35,19 +34,11 @@ public class Servers {
 		        e.printStackTrace();
 		        return;
 		    }
-		    
-		    try {
-				ConfigHelp.addServer(serverName, "localhost:" + port);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		    
 		    try {
 		        startServer(serverFolder);
 		    } catch (IOException e) {
 		        e.printStackTrace();
 		    }
-		    
 		}
 		
 		public static void copyFolder(File sourceFolder, File destinationFolder) throws IOException {
@@ -99,7 +90,7 @@ public class Servers {
 		public void setStatus(int status, String name) {
 			try {
 				
-				PreparedStatement stat = DatabaseManager.getConnexion().prepareStatement("UPDATE " + "servers" + " SET status = ? WHERE server_name = ?");
+				PreparedStatement stat = DatabaseManager.getConnexion().prepareStatement("UPDATE " + "server" + " SET status = ? WHERE server_name = ?");
 				stat.setInt(1, status);
 				stat.setString(2, name);
 				stat.executeUpdate();
@@ -127,7 +118,6 @@ public class Servers {
 	        if (Files.exists(path)) {
 	            Files.walk(path).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
 	        }
-	        ConfigHelp.removeServer(servername);
 	    }
 			
 }
